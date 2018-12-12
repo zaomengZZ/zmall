@@ -22,6 +22,7 @@ public class UserController {
     private IUserService iUserService;
 
     @RequestMapping(value = "login.do",method = RequestMethod.POST)
+    @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session){
         ServerResponse<User> response = iUserService.login(username,password);
         if(response.isSuccess()){
@@ -59,4 +60,39 @@ public class UserController {
     public ServerResponse<String> checkValid(String str,String type){
         return iUserService.checkValid(str,type);
     }
+
+    @RequestMapping(value = "get_user_info.do",method = RequestMethod.POST)
+    @ResponseBody
+    public  ServerResponse<User> getUserInfo(HttpSession session){
+        User user= (User) session.getAttribute(Const.CURRENT_USER);
+
+        if(user!=null){
+            return ServerResponse.createBySuccess(user);
+        }
+        return ServerResponse.createByErrorMessage("用户为未登录，无法获取登录信息");
+    }
+
+    @RequestMapping(value = "forget_get_question.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<String> forgetGetQuestion(String username){
+        return iUserService.selectQuestion(username);
+    }
+
+    @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<String> forgetCheckAnswer(String username,String question,String answer){
+        return iUserService.CheckAnswer(username,question,answer);
+    }
+
+    @RequestMapping(value = "rest_password.do",method = RequestMethod.POST)
+    @ResponseBody
+    public ServerResponse<String> restPassword(HttpSession session, String passwordOld,String passwordNew){
+        User user= (User) session.getAttribute(Const.CURRENT_USER);
+        if(user==null){
+            return  ServerResponse.createByErrorMessage("用户未登录");
+        }
+        //return  ServerResponse.createByErrorMessage("用户已登陆");
+        return  iUserService.resetPassword(passwordOld,passwordNew,user);
+    }
+
 }
