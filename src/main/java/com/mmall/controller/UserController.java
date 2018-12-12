@@ -21,6 +21,13 @@ public class UserController {
     @Autowired
     private IUserService iUserService;
 
+    /**
+     * 登錄
+     * @param username
+     * @param password
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "login.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> login(String username, String password, HttpSession session){
@@ -32,7 +39,7 @@ public class UserController {
     }
 
     /**
-     *退出登錄
+     *退出登录
      * @param session
      * @return
      */
@@ -44,7 +51,7 @@ public class UserController {
     }
 
     /**
-     * 註冊
+     * 注册
      * @param user
      * @return
      */
@@ -54,13 +61,23 @@ public class UserController {
         return iUserService.register(user);
     }
 
-
+    /**
+     * 检查是否有效
+     * @param str
+     * @param type
+     * @return
+     */
     @RequestMapping(value = "check_valid.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> checkValid(String str,String type){
         return iUserService.checkValid(str,type);
     }
 
+    /**
+     * 获取用户信息
+     * @param session
+     * @return
+     */
     @RequestMapping(value = "get_user_info.do",method = RequestMethod.POST)
     @ResponseBody
     public  ServerResponse<User> getUserInfo(HttpSession session){
@@ -72,18 +89,37 @@ public class UserController {
         return ServerResponse.createByErrorMessage("用户为未登录，无法获取登录信息");
     }
 
+    /**
+     * 获取问题
+     * @param username
+     * @return
+     */
     @RequestMapping(value = "forget_get_question.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetGetQuestion(String username){
         return iUserService.selectQuestion(username);
     }
 
+    /**
+     * 问题回答检查
+     * @param username
+     * @param question
+     * @param answer
+     * @return
+     */
     @RequestMapping(value = "forget_check_answer.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> forgetCheckAnswer(String username,String question,String answer){
         return iUserService.CheckAnswer(username,question,answer);
     }
 
+    /**
+     * 重置回答
+     * @param session
+     * @param passwordOld
+     * @param passwordNew
+     * @return
+     */
     @RequestMapping(value = "rest_password.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> restPassword(HttpSession session, String passwordOld,String passwordNew){
